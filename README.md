@@ -55,7 +55,7 @@ Implementar, documentar e compartilhar um projeto prático utilizando Kali Linux
 
 Inicialmente vamos identificar se a máquina está acessível usando o comando ping.
 
-Evidência: `images/ping.png`
+![Teste de ping para a Metasploitable 2](images/ping.png)
 
 ### Etapa 2 – Reconhecimento com Nmap
 
@@ -67,7 +67,7 @@ nmap -sV -p- 192.168.56.101
 
 Serviços relevantes esperados na Metasploitable 2: `21/ftp`, `139,445/smb`, `80/http` (DVWA).
 
-Evidência: `images/nmap-scan.png`
+![Resultado do scan Nmap](images/nmap-scan.png)
 
 ### Etapa 3 – Força Bruta em FTP
 
@@ -79,7 +79,7 @@ Vamos verificar se o serviço está ativo e aceitando conexões com o seguinte c
 ftp 192.168.56.101
 ```
 
-Evidência: `images/ftp-test.png`
+![Teste de conexão FTP](images/ftp-test.png)
 
 Identificamos que o serviço está funcionando. Para iniciar o ataque de força bruta, necessitamos criar dois arquivos, um com uma lista de usuários, pois, não sabemos qual usuário está cadastrado e uma outra lista de senhas.
 
@@ -111,23 +111,23 @@ Parâmetros:
 
 Ao terminar é possível identificar a senha que houve sucesso
 
-Evidência: `images/ftp-brute.png`
+![Força bruta em FTP com Medusa](images/ftp-brute.png)
 
 **Resultado:** `msfadmin:msfadmin`
 
 Vamos testar o resultado obtido.
 
-Evidência: `images/ftp-successful.png`
+![Login FTP bem-sucedido com a credencial encontrada](images/ftp-successful.png)
 
 ### Etapa 4 – Força Bruta no Formulário Web (DVWA)
 
 Acesse `http://192.168.56.101/dvwa/vulnerabilities/brute/`, abra as ferramentas de desenvolvedor do navegador (F12), coloque na aba "Network", e faça login com uma credencial qualquer somente para obter os dados necessários para a requisição.
 
-Evidência: `images/dvwa-login.png`
+![Login no DVWA capturado pelo DevTools](images/dvwa-login.png)
 
 Capture o cookie de sessão (`PHPSESSID`) pelas ferramentas de desenvolvedor do navegador.
 
-Evidência: `images/dvwa-cookie.png`
+![Cookie de sessão PHPSESSID capturado](images/dvwa-cookie.png)
 
 Execute o comando medusa:
 
@@ -140,7 +140,7 @@ medusa -h 192.168.56.101 -U usuarios.txt -P senhas.txt -M web-form \
   -t 4 -f
 ```
 
-Evidência: `images/dvwa-brute.png`
+![Força bruta no formulário do DVWA com Medusa](images/dvwa-brute.png)
 
 Após a execução é possível visualizar que houve uma tentativa com sucesso.
 
@@ -148,7 +148,7 @@ Após a execução é possível visualizar que houve uma tentativa com sucesso.
 
 Vamos testar o acesso com o resultado obtido.
 
-Evidência: `images/dvwa-success.png`
+![Login bem-sucedido no DVWA com a credencial encontrada](images/dvwa-success.png)
 
 ### Etapa 5 – Password Spraying em SMB
 
@@ -162,7 +162,7 @@ enum4linux -a 192.168.56.101 | tee enum_output.txt
 
 Após o término da execução, vamos ler o arquivo; neste momento vamos focar somente nos usuários.
 
-Evidência: `images/smb-users.png`
+![Usuários enumerados via enum4linux](images/smb-users.png)
 
 Vamos criar uma lista dos usuários mais comuns:
 
@@ -176,7 +176,7 @@ A lista de senhas, vamos utilizar a que já temos por já conter senhas padrões
 medusa -h 192.168.56.101 -U smb_usuarios.txt -P senhas.txt -M smbnt -t 4 -f
 ```
 
-Evidência: `images/smb-brute.png`
+![Password spraying em SMB com Medusa](images/smb-brute.png)
 
 **Resultado:** `User: msfadmin` / `Password: msfadmin`
 
@@ -186,7 +186,7 @@ Vamos testar o resultado:
 smbclient -L //192.168.56.101 -U msfadmin
 ```
 
-Evidência: `images/smb-success.png`
+![Listagem de compartilhamentos SMB com a credencial encontrada](images/smb-success.png)
 
 ## Wordlists Utilizadas
 
